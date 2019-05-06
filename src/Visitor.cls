@@ -7,7 +7,8 @@ class Visitor {
     //v.run('a = 10 + 20 * 30 / 6\nputs a\nputs a * 5');
     //System.debug(v.getBuffer());
     //v.run('a1 = 2 * 3 + 4 * 5\nputs a1\nputs a1 * 10');
-    v.run('if 2 != 2 { puts 123 } else { puts 234 }');
+//    v.run('i = 5\nwhile i != 10 { puts i\ni = i + 1\n }');
+    v.run('for i = 0; i < 5; i = i + 1 { puts i }');
     System.debug(v.getBuffer());
   }
 
@@ -55,6 +56,18 @@ class Visitor {
       }
       when '/' {
         return new Value(String.valueOf(left / right), null);
+      }
+      when '<=' {
+        return new Value(String.valueOf(left <= right), null);
+      }
+      when '>=' {
+        return new Value(String.valueOf(left >= right), null);
+      }
+      when '<' {
+        return new Value(String.valueOf(left < right), null);
+      }
+      when '>' {
+        return new Value(String.valueOf(left > right), null);
       }
       when '==' {
         return new Value(String.valueOf(left == right), null);
@@ -108,10 +121,26 @@ class Visitor {
   }
 
   public Value VisitFor(ForNode node) {
+    node.init.Accept(this);
+    while (true) {
+      Value result = node.condition.Accept(this);
+      if (result.value != 'true') {
+        break;
+      }
+      node.statements.Accept(this);
+      node.update.Accept(this);
+    }
     return null;
   }
 
   public Value VisitWhile(WhileNode node) {
+    while (true) {
+      Value result = node.condition.Accept(this);
+      if (result.value != 'true') {
+        break;
+      }
+      node.statements.Accept(this);
+    }
     return null;
   }
 }

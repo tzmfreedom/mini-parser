@@ -28,16 +28,11 @@ class Lexer {
     while (true){
       Token token;
       switch on current {
-        when '+', '-', '*', '/', '=', '\n', '(', ')', '{', '}', '!' {
-          if (current == '=') {
+        when '+', '-', '*', '/', '=', '\n', '(', ')', '{', '}', '!', ';', '>', '<' {
+          if (current == '=' || current == '!' || current == '<' || current == '>') {
             if (this.peek() == '=') {
-              token = new Token('==', '==');
-              this.next();
-            }
-          }
-          if (current == '!') {
-            if (this.peek() == '=') {
-              token = new Token('!=', '!=');
+              String type = current + this.peek();
+              token = new Token(type, type);
               this.next();
             }
           }

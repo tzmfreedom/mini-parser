@@ -3,9 +3,11 @@ class Parser {
   public Integer index;
 
   public static void main() {
-    String str = 'if 1 == 1 { puts 123 }';
+    String str = 'while 1 == 1 { puts 123 }';
+    // String str = 'if 1 == 1 { puts 123 }';
     // String str = '10 + 20 * 30 / 6';
     List<Token> tokens = new Lexer(str).parse();
+    System.debug(tokens);
     List<Node> nodes = new Parser(tokens).parse();
     System.debug(nodes);
   }
@@ -36,6 +38,12 @@ class Parser {
     if (this.current('if') != null) {
       return this.ifStatement();
     }
+    if (this.current('while') != null) {
+      return this.whileStatement();
+    }
+    if (this.current('for') != null) {
+      return this.forStatement();
+    }
     if (this.peek('=') != null) {
       return this.assign();
     }
@@ -51,6 +59,36 @@ class Parser {
       return null;
     }
     return new BlockNode(statements);
+  }
+
+  public Node whileStatement() {
+    this.consume('while');
+    Node condition = this.boolExpression();
+    Node statements = this.block();
+    return new WhileNode(condition, statements);
+  }
+
+  public Node forStatement() {
+    this.consume('for');
+    Node init = this.assign();
+    if (init == null) {
+      return null;
+    }
+    this.consume(';');
+    Node condition = this.boolExpression();
+    if (condition == null) {
+      return null;
+    }
+    this.consume(';');
+    Node update = this.assign();
+    if (update == null) {
+      return null;
+    }
+    Node statements = this.block();
+    if (statements == null) {
+      return null;
+    }
+    return new ForNode(init, condition, update, statements);
   }
 
   public Node ifStatement() {
@@ -73,30 +111,37 @@ class Parser {
       return new BoolNode(false);
     }
     if (this.peek('==') != null) {
-      Node left = this.term();
-      if (left == null) {
-        return null;
-      }
-      this.consume('==');
-      Node right = this.term();
-      if (right == null) {
-        return null;
-      }
-      return new BinaryOperatorNode('==', left, right);
+      return this._boolExpression('==');
     }
     if (this.peek('!=') != null) {
-      Node left = this.term();
-      if (left == null) {
-        return null;
-      }
-      this.consume('!=');
-      Node right = this.term();
-      if (right == null) {
-        return null;
-      }
-      return new BinaryOperatorNode('!=', left, right);
+      return this._boolExpression('!=');
+    }
+    if (this.peek('<') != null) {
+      return this._boolExpression('<');
+    }
+    if (this.peek('>') != null) {
+      return this._boolExpression('>');
+    }
+    if (this.peek('<=') != null) {
+      return this._boolExpression('<=');
+    }
+    if (this.peek('>=') != null) {
+      return this._boolExpression('>=');
     }
     return null;
+  }
+
+  public Node _boolExpression(String type) {
+    Node left = this.term();
+    if (left == null) {
+      return null;
+    }
+    this.consume(type);
+    Node right = this.term();
+    if (right == null) {
+      return null;
+    }
+    return new BinaryOperatorNode(type, left, right);
   }
 
   public Node call() {
