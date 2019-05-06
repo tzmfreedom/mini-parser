@@ -3,7 +3,8 @@ class Parser {
   public Integer index;
 
   public static void main() {
-    String str = '10 + 20 * 30 / 6';
+    String str = 'if 1 == 1 { puts 123 }';
+    // String str = '10 + 20 * 30 / 6';
     List<Token> tokens = new Lexer(str).parse();
     List<Node> nodes = new Parser(tokens).parse();
     System.debug(nodes);
@@ -15,28 +16,87 @@ class Parser {
   }
 
   public List<Node> parse() {
+    return this.statements();
+  }
+
+  public List<Node> statements() {
     List<Node> statements = new List<Node>();
     while (true){
       Node stmt = this.statement();
       if (stmt == null) {
         break;
       }
-      this.consume('\n');
       statements.add(stmt);
+      this.consume('\n');
     }
     return statements;
   }
 
   public Node statement() {
-    Integer index = this.index;
-    Node n = this.call();
-    if (n != null) {
-      return n;
+    if (this.current('if') != null) {
+      return this.ifStatement();
     }
-    this.index = index;
+    if (this.peek('=') != null) {
+      return this.assign();
+    }
+    return this.call();
+  }
 
-    n = this.assign();
-    return n;
+  public Node block() {
+    if (consume('{') == null) {
+      return null;
+    }
+    List<Node> statements = this.statements();
+    if (consume('}') == null) {
+      return null;
+    }
+    return new BlockNode(statements);
+  }
+
+  public Node ifStatement() {
+    this.consume('if');
+    Node condition = this.boolExpression();
+    Node ifBlock = this.block();
+    Node elseBlock;
+    if (this.current('else') != null) {
+      this.consume('else');
+      elseBlock = this.block();
+    }
+    return new IfNode(condition, ifBlock, elseBlock);
+  }
+
+  public Node boolExpression() {
+    if (this.consume('true') != null) {
+      return new BoolNode(true);
+    }
+    if (this.consume('false') != null) {
+      return new BoolNode(false);
+    }
+    if (this.peek('==') != null) {
+      Node left = this.term();
+      if (left == null) {
+        return null;
+      }
+      this.consume('==');
+      Node right = this.term();
+      if (right == null) {
+        return null;
+      }
+      return new BinaryOperatorNode('==', left, right);
+    }
+    if (this.peek('!=') != null) {
+      Node left = this.term();
+      if (left == null) {
+        return null;
+      }
+      this.consume('!=');
+      Node right = this.term();
+      if (right == null) {
+        return null;
+      }
+      return new BinaryOperatorNode('!=', left, right);
+    }
+    return null;
   }
 
   public Node call() {
@@ -115,7 +175,18 @@ class Parser {
   }
 
   public Token peek() {
+    if (this.tokens.size() <= this.index+1) {
+      return null;
+    }
     return this.tokens[this.index+1];
+  }
+
+  public Token peek(String type) {
+    Token token = this.peek();
+    if (token != null && token.Type == type) {
+      return token;
+    }
+    return null;
   }
 
   public Token current() {
@@ -123,5 +194,13 @@ class Parser {
       return null;
     }
     return this.tokens[this.index];
+  }
+
+  public Token current(String type) {
+    Token token = this.current();
+    if (token != null && token.Type == type) {
+      return token;
+    }
+    return null;
   }
 }

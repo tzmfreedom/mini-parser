@@ -1,13 +1,14 @@
 class Visitor {
   public Map<String, Value> variables;
-  public String buffer;
+  private String buffer;
 
   public static void main() {
     Visitor v = new Visitor();
-    v.run('a = 10 + 20 * 30 / 6\nputs a\nputs a * 5');
-    System.debug(v.buffer);
-    v.run('a1 = 2 * 3 + 4 * 5\nputs a1\nputs a1 * 10');
-    System.debug(v.buffer);
+    //v.run('a = 10 + 20 * 30 / 6\nputs a\nputs a * 5');
+    //System.debug(v.getBuffer());
+    //v.run('a1 = 2 * 3 + 4 * 5\nputs a1\nputs a1 * 10');
+    v.run('if 2 != 2 { puts 123 } else { puts 234 }');
+    System.debug(v.getBuffer());
   }
 
   public Visitor() {
@@ -21,6 +22,10 @@ class Visitor {
     for (Node node : nodes) {
       this.Visit(node);
     }
+  }
+
+  public String getBuffer() {
+    return this.buffer;
   }
 
   public void Visit(Node node) {
@@ -51,6 +56,12 @@ class Visitor {
       when '/' {
         return new Value(String.valueOf(left / right), null);
       }
+      when '==' {
+        return new Value(String.valueOf(left == right), null);
+      }
+      when '!=' {
+        return new Value(String.valueOf(left != right), null);
+      }
     }
     return null;
   }
@@ -71,6 +82,36 @@ class Visitor {
         buffer += node.value.Accept(this).getString() + '\n';
       }
     }
+    return null;
+  }
+
+  public Value VisitBool(BoolNode node) {
+    return new Value(String.valueOf(node.value), node);
+  }
+
+  public Value VisitBlock(BlockNode node) {
+    Value ret;
+    for (Node statement : node.statements) {
+      ret = statement.Accept(this);
+    }
+    return ret;
+  }
+
+  public Value VisitIf(IfNode node) {
+    Value v = node.condition.Accept(this);
+    if (v.value == 'true') {
+      node.ifBlock.Accept(this);
+    } else {
+      node.elseBlock.Accept(this);
+    }
+    return null;
+  }
+
+  public Value VisitFor(ForNode node) {
+    return null;
+  }
+
+  public Value VisitWhile(WhileNode node) {
     return null;
   }
 }

@@ -2,8 +2,17 @@ class Lexer {
   public String str;
   public Integer index;
 
+  public List<String> reserved = new List<String>{
+    'if',
+    'else',
+    'for',
+    'while',
+    'true',
+    'false'
+  };
+
   public static void main() {
-    String str = '1\n2';
+    String str = 'if true { puts 123 }';
     List<Token> tokens = new Lexer(str).parse();
     System.debug(tokens);
   }
@@ -19,8 +28,22 @@ class Lexer {
     while (true){
       Token token;
       switch on current {
-        when '+', '-', '*', '/', '=', '\n' {
-          token = new Token(current, current);
+        when '+', '-', '*', '/', '=', '\n', '(', ')', '{', '}', '!' {
+          if (current == '=') {
+            if (this.peek() == '=') {
+              token = new Token('==', '==');
+              this.next();
+            }
+          }
+          if (current == '!') {
+            if (this.peek() == '=') {
+              token = new Token('!=', '!=');
+              this.next();
+            }
+          }
+          if (token == null) {
+            token = new Token(current, current);
+          }
         }
         when else {
           if (Pattern.matches('[0-9]', current)) {
@@ -54,6 +77,9 @@ class Lexer {
         break;
       }
       current = this.peek();
+    }
+    if (this.reserved.contains(value)) {
+      return new Token(value, value);
     }
     return new Token('Ident', value);
   }
