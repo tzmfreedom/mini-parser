@@ -1,4 +1,4 @@
-class WhileNode implements Node {
+public class WhileNode implements Node {
   public Node condition;
   public Node statements;
 

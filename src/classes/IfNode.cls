@@ -1,4 +1,4 @@
-class IfNode implements Node {
+public class IfNode implements Node {
   public Node condition;
   public Node ifBlock;
   public Node elseBlock;

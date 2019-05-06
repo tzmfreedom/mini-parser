@@ -1,4 +1,4 @@
-class IntegerNode implements Node {
+public class IntegerNode implements Node {
   public String value;
 
   public IntegerNode(String value) {

@@ -1,4 +1,4 @@
-class IdentifierNode implements Node {
+public class IdentifierNode implements Node {
   public String value;
 
   public IdentifierNode(String value) {

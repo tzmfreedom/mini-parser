@@ -1,4 +1,4 @@
-class Value {
+public class Value {
     public Node original;
     public String value;
 

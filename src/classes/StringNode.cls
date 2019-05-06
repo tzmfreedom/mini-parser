@@ -1,4 +1,4 @@
-class StringNode implements Node {
+public class StringNode implements Node {
   public String value;
 
   public StringNode(String value) {

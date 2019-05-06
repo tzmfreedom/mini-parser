@@ -1,4 +1,4 @@
-class BlockNode implements Node {
+public class BlockNode implements Node {
   public List<Node> statements;
 
   public BlockNode(List<Node> statements) {

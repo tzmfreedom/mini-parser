@@ -1,4 +1,4 @@
-class Visitor {
+public class Visitor {
   public Map<String, Value> variables;
   private String buffer;
 
@@ -128,7 +128,7 @@ class Visitor {
         break;
       }
       node.statements.Accept(this);
-      node.update.Accept(this);
+      node.upd.Accept(this);
     }
     return null;
   }

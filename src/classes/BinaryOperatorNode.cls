@@ -1,4 +1,4 @@
-class BinaryOperatorNode implements Node {
+public class BinaryOperatorNode implements Node {
   public String type;
   public Node left;
   public Node right;

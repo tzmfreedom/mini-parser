@@ -1,4 +1,4 @@
-class BoolNode implements Node {
+public class BoolNode implements Node {
   public Boolean value;
 
   public BoolNode(Boolean value) {

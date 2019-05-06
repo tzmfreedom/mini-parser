@@ -1,4 +1,4 @@
-class Token {
+public class Token {
   public String type;
   public String value;
 

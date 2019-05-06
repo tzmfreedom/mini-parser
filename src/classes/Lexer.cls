@@ -1,4 +1,4 @@
-class Lexer {
+public class Lexer {
   public String str;
   public Integer index;
 
@@ -97,11 +97,11 @@ class Lexer {
   }
 
   public String peek() {
-    return this.str.charAt(this.index+1);
+    return this.str.substring(this.index+1, this.index+2);
   }
 
   public String current() {
-    return this.str.charAt(this.index);
+    return this.str.substring(this.index, this.index+1);
   }
 
   public String next() {

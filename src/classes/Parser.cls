@@ -1,4 +1,4 @@
-class Parser {
+public class Parser {
   public List<Token> tokens;
   public Integer index;
 
@@ -80,15 +80,15 @@ class Parser {
       return null;
     }
     this.consume(';');
-    Node update = this.assign();
-    if (update == null) {
+    Node upd = this.assign();
+    if (upd == null) {
       return null;
     }
     Node statements = this.block();
     if (statements == null) {
       return null;
     }
-    return new ForNode(init, condition, update, statements);
+    return new ForNode(init, condition, upd, statements);
   }
 
   public Node ifStatement() {
@@ -111,27 +111,27 @@ class Parser {
       return new BoolNode(false);
     }
     if (this.peek('==') != null) {
-      return this._boolExpression('==');
+      return this.createBoolExpression('==');
     }
     if (this.peek('!=') != null) {
-      return this._boolExpression('!=');
+      return this.createBoolExpression('!=');
     }
     if (this.peek('<') != null) {
-      return this._boolExpression('<');
+      return this.createBoolExpression('<');
     }
     if (this.peek('>') != null) {
-      return this._boolExpression('>');
+      return this.createBoolExpression('>');
     }
     if (this.peek('<=') != null) {
-      return this._boolExpression('<=');
+      return this.createBoolExpression('<=');
     }
     if (this.peek('>=') != null) {
-      return this._boolExpression('>=');
+      return this.createBoolExpression('>=');
     }
     return null;
   }
 
-  public Node _boolExpression(String type) {
+  public Node createBoolExpression(String type) {
     Node left = this.term();
     if (left == null) {
       return null;
