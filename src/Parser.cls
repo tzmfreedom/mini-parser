@@ -15,18 +15,64 @@ class Parser {
   }
 
   public List<Node> parse() {
-    return new List<Node>{ this.add() };
+    List<Node> statements = new List<Node>();
+    while (true){
+      Node stmt = this.statement();
+      if (stmt == null) {
+        break;
+      }
+      this.consume('\n');
+      statements.add(stmt);
+    }
+    return statements;
+  }
+
+  public Node statement() {
+    Integer index = this.index;
+    Node n = this.call();
+    if (n != null) {
+      return n;
+    }
+    this.index = index;
+
+    n = this.assign();
+    return n;
+  }
+
+  public Node call() {
+    Token ident = this.consume('Ident');
+    if (ident == null) {
+      return null;
+    }
+    Node exp = this.add();
+    if (exp == null) {
+      return null;
+    }
+    return new CallNode(ident.value, exp);
+  }
+
+  public Node assign() {
+    Token ident = this.consume('Ident');
+    if (ident == null) {
+      return null;
+    }
+    Token op = this.consume('=');
+    if (op == null) {
+      return null;
+    }
+    Node exp = this.add();
+    return new AssignNode(ident.value, exp);
   }
 
   public Node add() {
     Node exp = this.mul();
     Token op = consume('+');
     if (op != null) {
-      return new Node('+', '+', exp, this.add());
+      return new BinaryOperatorNode('+', exp, this.add());
     }
     op = consume('-');
     if (op != null) {
-      return new Node('-', '-', exp, this.add());
+      return new BinaryOperatorNode('-', exp, this.add());
     }
     return exp;
   }
@@ -35,18 +81,25 @@ class Parser {
     Node exp = this.term();
     Token op = consume('*');
     if (op != null) {
-      return new Node('*', '*', exp, this.mul());
+      return new BinaryOperatorNode('*', exp, this.mul());
     }
     op = consume('/');
     if (op != null) {
-      return new Node('/', '/', exp, this.mul());
+      return new BinaryOperatorNode('/', exp, this.mul());
     }
     return exp;
   }
 
   public Node term() {
     Token exp = this.consume('Integer');
-    return new Node('Integer', exp.value, null, null);
+    if (exp != null) {
+      return new IntegerNode(exp.value);
+    }
+    exp = this.consume('Ident');
+    if (exp != null) {
+      return new IdentifierNode(exp.value);
+    }
+    return null;
   }
 
   public Token consume(String type) {

@@ -3,7 +3,7 @@ class Lexer {
   public Integer index;
 
   public static void main() {
-    String str = '10 + 20 * 30 / 6';
+    String str = '1\n2';
     List<Token> tokens = new Lexer(str).parse();
     System.debug(tokens);
   }
@@ -19,12 +19,14 @@ class Lexer {
     while (true){
       Token token;
       switch on current {
-        when '+', '-', '*', '/' {
+        when '+', '-', '*', '/', '=', '\n' {
           token = new Token(current, current);
         }
         when else {
           if (Pattern.matches('[0-9]', current)) {
             token = this.parseInt();
+          } else if (Pattern.matches('[a-zA-Z]', current)) {
+            token = this.parseIdent();
           }
         }
       }
@@ -39,15 +41,36 @@ class Lexer {
     return tokens;
   }
 
-  public Token parseInt() {
-    String current = this.current();
-    String value = '';
-    while (Pattern.matches('[0-9]', current)) {
+  public Token parseIdent() {
+    String value = this.current();
+    if (this.index == this.str.length() - 1) {
+      return new Token('Ident', value);
+    }
+    String current = this.peek();
+    while (Pattern.matches('[a-zA-Z0-9]', current)) {
+      this.next();
       value += current;
       if (this.index == this.str.length() - 1) {
         break;
       }
-      current = this.next();
+      current = this.peek();
+    }
+    return new Token('Ident', value);
+  }
+
+  public Token parseInt() {
+    String value = this.current();
+    if (this.index == this.str.length() - 1) {
+      return new Token('Integer', value);
+    }
+    String current = this.peek();
+    while (Pattern.matches('[0-9]', current)) {
+      this.next();
+      value += current;
+      if (this.index == this.str.length() - 1) {
+        break;
+      }
+      current = this.peek();
     }
     return new Token('Integer', value);
   }
