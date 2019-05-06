@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>AssignNode.cls</members>
+        <members>BinaryOperatorNode.cls</members>
+        <members>BlockNode.cls</members>
+        <members>BoolNode.cls</members>
+        <members>CallNode.cls</members>
+        <members>ForNode.cls</members>
+        <members>IdentifierNode.cls</members>
+        <members>IfNode.cls</members>
+        <members>IntegerNode.cls</members>
+        <members>Lexer.cls</members>
+        <members>Node.cls</members>
+        <members>Parser.cls</members>
+        <members>StringNode.cls</members>
+        <members>Token.cls</members>
+        <members>Value.cls</members>
+        <members>Visitor.cls</members>
+        <members>WhileNode.cls</members>
+        <name>ApexClass</name>
+    </types>
+    <version>45.0</version>
+</Package>
