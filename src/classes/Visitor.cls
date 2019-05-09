@@ -8,7 +8,8 @@ public class Visitor {
     //System.debug(v.getBuffer());
     //v.run('a1 = 2 * 3 + 4 * 5\nputs a1\nputs a1 * 10');
 //    v.run('i = 5\nwhile i != 10 { puts i\ni = i + 1\n }');
-    v.run('for i = 0; i < 5; i = i + 1 { puts i }');
+//    v.run('for i = 0; i < 5; i = i + 1 { puts i }');
+    v.run('a = "hoge"\nputs a + "fuga"');
     System.debug(v.getBuffer());
   }
 
@@ -42,38 +43,48 @@ public class Visitor {
   }
 
   public Value VisitBinaryOperator(BinaryOperatorNode node) {
-    Integer left = node.left.Accept(this).getInteger();
-    Integer right = node.right.Accept(this).getInteger();
-    switch on node.type {
-      when '+' {
-        return new Value(String.valueOf(left + right), null);
+    Value leftValue = node.left.Accept(this);
+    Value rightValue = node.right.Accept(this);
+    if (leftValue.original instanceof StringNode || rightValue.original instanceof StringNode) {
+      switch on node.type {
+        when '+' {
+          return new Value(leftValue.getString() + rightValue.getString(), null);
+        }
       }
-      when '-' {
-        return new Value(String.valueOf(left - right), null);
-      }
-      when '*' {
-        return new Value(String.valueOf(left * right), null);
-      }
-      when '/' {
-        return new Value(String.valueOf(left / right), null);
-      }
-      when '<=' {
-        return new Value(String.valueOf(left <= right), null);
-      }
-      when '>=' {
-        return new Value(String.valueOf(left >= right), null);
-      }
-      when '<' {
-        return new Value(String.valueOf(left < right), null);
-      }
-      when '>' {
-        return new Value(String.valueOf(left > right), null);
-      }
-      when '==' {
-        return new Value(String.valueOf(left == right), null);
-      }
-      when '!=' {
-        return new Value(String.valueOf(left != right), null);
+    } else {
+      Integer left = leftValue.getInteger();
+      Integer right = rightValue.getInteger();
+      switch on node.type {
+        when '+' {
+          return new Value(String.valueOf(left + right), null);
+        }
+        when '-' {
+          return new Value(String.valueOf(left - right), null);
+        }
+        when '*' {
+          return new Value(String.valueOf(left * right), null);
+        }
+        when '/' {
+          return new Value(String.valueOf(left / right), null);
+        }
+        when '<=' {
+          return new Value(String.valueOf(left <= right), null);
+        }
+        when '>=' {
+          return new Value(String.valueOf(left >= right), null);
+        }
+        when '<' {
+          return new Value(String.valueOf(left < right), null);
+        }
+        when '>' {
+          return new Value(String.valueOf(left > right), null);
+        }
+        when '==' {
+          return new Value(String.valueOf(left == right), null);
+        }
+        when '!=' {
+          return new Value(String.valueOf(left != right), null);
+        }
       }
     }
     return null;

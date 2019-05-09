@@ -40,6 +40,9 @@ public class Lexer {
             token = new Token(current, current);
           }
         }
+        when '"' {
+          token = this.parseString();
+        }
         when else {
           if (Pattern.matches('[0-9]', current)) {
             token = this.parseInt();
@@ -94,6 +97,19 @@ public class Lexer {
       current = this.peek();
     }
     return new Token('Integer', value);
+  }
+
+  public Token parseString() {
+    String current = this.next();
+    String value = '';
+    while (current != '"') {
+      value += current;
+      if (this.index == this.str.length() - 1) {
+        break;
+      }
+      current = this.next();
+    }
+    return new Token('String', value);
   }
 
   public String peek() {

@@ -204,6 +204,10 @@ public class Parser {
     if (exp != null) {
       return new IdentifierNode(exp.value);
     }
+    exp = this.consume('String');
+    if (exp != null) {
+      return new StringNode(exp.value);
+    }
     return null;
   }
 
