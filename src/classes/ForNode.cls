@@ -11,7 +11,7 @@ public class ForNode implements Node {
     this.statements = statements;
   }
 
-  public Value Accept(Visitor v) {
+  public Value accept(Visitor v) {
     return v.VisitFor(this);
   }
 }

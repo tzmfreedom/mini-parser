@@ -5,7 +5,7 @@ public class BoolNode implements Node {
     this.value = value;
   }
 
-  public Value Accept(Visitor v) {
+  public Value accept(Visitor v) {
     return v.VisitBool(this);
   }
 }

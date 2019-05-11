@@ -31,20 +31,20 @@ public class Visitor {
   }
 
   public void Visit(Node node) {
-    Value result = node.Accept(this);
+    Value result = node.accept(this);
   }
 
-  public Value VisitInteger(IntegerNode node) {
+  private Value visitInteger(IntegerNode node) {
     return new Value(node.value, node);
   }
 
-  public Value VisitString(StringNode node) {
+  private Value visitString(StringNode node) {
     return new Value(node.value, node);
   }
 
-  public Value VisitBinaryOperator(BinaryOperatorNode node) {
-    Value leftValue = node.left.Accept(this);
-    Value rightValue = node.right.Accept(this);
+  private Value visitBinaryOperator(BinaryOperatorNode node) {
+    Value leftValue = node.left.accept(this);
+    Value rightValue = node.right.accept(this);
     if (leftValue.original instanceof StringNode || rightValue.original instanceof StringNode) {
       switch on node.type {
         when '+' {
@@ -90,67 +90,67 @@ public class Visitor {
     return null;
   }
 
-  public Value VisitAssign(AssignNode node) {
-    Value v = node.value.Accept(this);
+  private Value visitAssign(AssignNode node) {
+    Value v = node.value.accept(this);
     this.variables.put(node.ident, v);
     return v;
   }
 
-  public Value VisitIdentifier(IdentifierNode node) {
+  private Value visitIdentifier(IdentifierNode node) {
     return this.variables.get(node.value);
   }
 
-  public Value VisitCall(CallNode node) {
+  private Value visitCall(CallNode node) {
     switch on node.ident {
       when 'puts' {
-        buffer += node.value.Accept(this).getString() + '\n';
+        buffer += node.value.accept(this).getString() + '\n';
       }
     }
     return null;
   }
 
-  public Value VisitBool(BoolNode node) {
+  private Value visitBool(BoolNode node) {
     return new Value(String.valueOf(node.value), node);
   }
 
-  public Value VisitBlock(BlockNode node) {
+  private Value visitBlock(BlockNode node) {
     Value ret;
     for (Node statement : node.statements) {
-      ret = statement.Accept(this);
+      ret = statement.accept(this);
     }
     return ret;
   }
 
-  public Value VisitIf(IfNode node) {
-    Value v = node.condition.Accept(this);
+  private Value visitIf(IfNode node) {
+    Value v = node.condition.accept(this);
     if (v.value == 'true') {
-      node.ifBlock.Accept(this);
+      node.ifBlock.accept(this);
     } else {
-      node.elseBlock.Accept(this);
+      node.elseBlock.accept(this);
     }
     return null;
   }
 
-  public Value VisitFor(ForNode node) {
-    node.init.Accept(this);
+  private Value visitFor(ForNode node) {
+    node.init.accept(this);
     while (true) {
-      Value result = node.condition.Accept(this);
+      Value result = node.condition.accept(this);
       if (result.value != 'true') {
         break;
       }
-      node.statements.Accept(this);
-      node.upd.Accept(this);
+      node.statements.accept(this);
+      node.upd.accept(this);
     }
     return null;
   }
 
-  public Value VisitWhile(WhileNode node) {
+  private Value visitWhile(WhileNode node) {
     while (true) {
-      Value result = node.condition.Accept(this);
+      Value result = node.condition.accept(this);
       if (result.value != 'true') {
         break;
       }
-      node.statements.Accept(this);
+      node.statements.accept(this);
     }
     return null;
   }

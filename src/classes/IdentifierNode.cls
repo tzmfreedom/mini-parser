@@ -5,7 +5,7 @@ public class IdentifierNode implements Node {
     this.value = value;
   }
 
-  public Value Accept(Visitor v) {
+  public Value accept(Visitor v) {
     return v.VisitIdentifier(this);
   }
 }

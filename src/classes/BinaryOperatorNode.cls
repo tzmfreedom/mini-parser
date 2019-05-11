@@ -9,7 +9,7 @@ public class BinaryOperatorNode implements Node {
     this.right = right;
   }
 
-  public Value Accept(Visitor v) {
+  public Value accept(Visitor v) {
     return v.VisitBinaryOperator(this);
   }
 }

@@ -9,7 +9,7 @@ public class IfNode implements Node {
     this.elseBlock = elseBlock;
   }
 
-  public Value Accept(Visitor v) {
+  public Value accept(Visitor v) {
     return v.VisitIf(this);
   }
 }

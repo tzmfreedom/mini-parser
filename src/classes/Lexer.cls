@@ -2,7 +2,7 @@ public class Lexer {
   public String str;
   public Integer index;
 
-  public List<String> reserved = new List<String>{
+  private static List<String> reserved = new List<String>{
     'if',
     'else',
     'for',
@@ -62,7 +62,7 @@ public class Lexer {
     return tokens;
   }
 
-  public Token parseIdent() {
+  private Token parseIdent() {
     String value = this.current();
     if (this.index == this.str.length() - 1) {
       return new Token('Ident', value);
@@ -82,7 +82,7 @@ public class Lexer {
     return new Token('Ident', value);
   }
 
-  public Token parseInt() {
+  private Token parseInt() {
     String value = this.current();
     if (this.index == this.str.length() - 1) {
       return new Token('Integer', value);
@@ -99,7 +99,7 @@ public class Lexer {
     return new Token('Integer', value);
   }
 
-  public Token parseString() {
+  private Token parseString() {
     String current = this.next();
     String value = '';
     while (current != '"') {
@@ -112,15 +112,15 @@ public class Lexer {
     return new Token('String', value);
   }
 
-  public String peek() {
+  private String peek() {
     return this.str.substring(this.index+1, this.index+2);
   }
 
-  public String current() {
+  private String current() {
     return this.str.substring(this.index, this.index+1);
   }
 
-  public String next() {
+  private String next() {
     this.index++;
     return this.current();
   }

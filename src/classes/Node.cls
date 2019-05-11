@@ -1,3 +1,3 @@
 public interface Node {
-  Value Accept(Visitor v);
+  Value accept(Visitor v);
 }

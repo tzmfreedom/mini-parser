@@ -7,7 +7,7 @@ public class CallNode implements Node {
     this.value = value;
   }
 
-  public Value Accept(Visitor v) {
+  public Value accept(Visitor v) {
     return v.VisitCall(this);
   }
 }

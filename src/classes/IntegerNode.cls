@@ -5,7 +5,7 @@ public class IntegerNode implements Node {
     this.value = value;
   }
 
-  public Value Accept(Visitor v) {
+  public Value accept(Visitor v) {
     return v.VisitInteger(this);
   }
 }

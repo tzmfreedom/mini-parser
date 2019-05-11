@@ -5,7 +5,7 @@ public class StringNode implements Node {
     this.value = value;
   }
 
-  public Value Accept(Visitor v) {
+  public Value accept(Visitor v) {
     return v.VisitString(this);
   }
 }

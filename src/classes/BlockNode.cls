@@ -5,7 +5,7 @@ public class BlockNode implements Node {
     this.statements = statements;
   }
 
-  public Value Accept(Visitor v) {
+  public Value accept(Visitor v) {
     return v.VisitBlock(this);
   }
 }
